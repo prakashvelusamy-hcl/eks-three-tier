@@ -15,4 +15,9 @@ def index():
     return "Employee Directory API is running"
 
 if __name__ == "__main__":
+    # ✅ Create tables before starting the app (only runs once if tables don't exist)
+    with app.app_context():
+        db.create_all()
+
+    # ✅ Start the Flask app
     app.run(host="0.0.0.0", port=5000)
