@@ -39,11 +39,6 @@ app.register_blueprint(bp, url_prefix="/api")
 def index():
     return "Employee Directory API is running"
 
-# 👇 This block ensures tables are created inside the running container
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
