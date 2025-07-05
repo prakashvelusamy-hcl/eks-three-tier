@@ -5,14 +5,22 @@ bp = Blueprint("routes", __name__)
 
 @bp.route("/employees", methods=["GET"])
 def get_employees():
-    search = request.args.get("search", "")
-    results = Employee.query.filter(
-        (Employee.name.ilike(f"%{search}%")) |
-        (Employee.department.ilike(f"%{search}%"))
-    ).all()
-    return jsonify([{
-        "id": e.id,
-        "name": e.name,
-        "email": e.email,
-        "department": e.department
-    } for e in results])
+    search = request.args.get("search", "").strip()
+
+    query = Employee.query
+    if search:
+        query = query.filter(
+            (Employee.name.ilike(f"%{search}%")) |
+            (Employee.department.ilike(f"%{search}%"))
+        )
+
+    employees = query.all()
+
+    return jsonify([
+        {
+            "id": e.id,
+            "name": e.name,
+            "email": e.email,
+            "department": e.department
+        } for e in employees
+    ])
