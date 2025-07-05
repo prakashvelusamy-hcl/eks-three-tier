@@ -37,6 +37,6 @@ DB_PASSWORD = rds_secret["password"]
 DB_HOST = app_secret["host"]
 DB_NAME = app_secret["dbname"]
 
-SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+DATABASE_URL = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
