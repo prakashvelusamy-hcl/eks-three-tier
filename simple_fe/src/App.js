@@ -8,27 +8,33 @@ function App() {
   const [query, setQuery] = useState("");
   const [formData, setFormData] = useState({ name: "", email: "", department: "" });
 
-  // Fetch filtered employees
-  const fetchEmployees = async () => {
+  // Fetch employees with optional query
+  const fetchEmployees = async (search = "") => {
     try {
-      const res = await axios.get(`${API_URL}?search=${query}`);
+      const res = await axios.get(`${API_URL}?search=${search}`);
       setEmployees(res.data);
     } catch (err) {
       console.error("Error fetching employees:", err);
     }
   };
 
+  // Initial fetch
   useEffect(() => {
     fetchEmployees();
-  }, [query]);
+  }, []);
 
-  // Handle form submission to add employee
+  // Handle search button click
+  const handleSearch = () => {
+    fetchEmployees(query);
+  };
+
+  // Handle form submission to add new employee
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post(API_URL, formData);
       setFormData({ name: "", email: "", department: "" });
-      fetchEmployees();
+      fetchEmployees(); // Refresh list
     } catch (err) {
       alert("Error adding employee. Check if email already exists.");
       console.error(err);
@@ -39,16 +45,21 @@ function App() {
     <div style={{ padding: "20px", maxWidth: 600, margin: "auto" }}>
       <h2>Employee Directory</h2>
 
-      <input
-        type="text"
-        placeholder="Search by name or department"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        style={{ width: "100%", padding: 10, marginBottom: 20 }}
-      />
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="Search by name or department"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{ flex: 1, padding: 10 }}
+        />
+        <button onClick={handleSearch} style={{ padding: "10px 20px" }}>
+          Search
+        </button>
+      </div>
 
       <ul>
-        {employees.map(emp => (
+        {employees.map((emp) => (
           <li key={emp.id}>
             <b>{emp.name}</b> - {emp.department} - {emp.email}
           </li>
