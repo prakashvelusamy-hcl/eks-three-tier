@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = "http://13.235.245.253:5000/api/employees";
+// const API_URL = "http://13.235.245.253:5000/api/employees";
+const API_URL = (window._env_ && window._env_.REACT_APP_API_BASE_URL) || "/api/employees";
 
 function App() {
   const [employees, setEmployees] = useState([]);
