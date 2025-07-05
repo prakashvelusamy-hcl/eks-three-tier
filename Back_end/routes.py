@@ -1,3 +1,5 @@
+# routes.py
+
 from flask import Blueprint, request, jsonify
 from models import db, Employee
 
@@ -31,22 +33,6 @@ def get_employee(id):
         "department": emp.department
     })
 
-# ✏️ Update employee by ID
-@bp.route("/employees/<int:id>", methods=["PUT"])
-def update_employee(id):
-    emp = Employee.query.get_or_404(id)
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
-
-    emp.name = data.get("name", emp.name)
-    emp.email = data.get("email", emp.email)
-    emp.department = data.get("department", emp.department)
-
-    db.session.commit()
-    return jsonify({"message": "Employee updated successfully"})
-
 # 🆕 Create a new employee
 @bp.route("/employees", methods=["POST"])
 def create_employee():
@@ -68,3 +54,27 @@ def create_employee():
     db.session.commit()
 
     return jsonify({"message": "Employee created", "id": new_emp.id}), 201
+
+# ✏️ Update employee by ID
+@bp.route("/employees/<int:id>", methods=["PUT"])
+def update_employee(id):
+    emp = Employee.query.get_or_404(id)
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    emp.name = data.get("name", emp.name)
+    emp.email = data.get("email", emp.email)
+    emp.department = data.get("department", emp.department)
+
+    db.session.commit()
+    return jsonify({"message": "Employee updated successfully"})
+
+
+@bp.route("/employees/<int:id>", methods=["DELETE"])
+def delete_employee(id):
+    emp = Employee.query.get_or_404(id)
+    db.session.delete(emp)
+    db.session.commit()
+    return jsonify({"message": "Employee deleted successfully"})

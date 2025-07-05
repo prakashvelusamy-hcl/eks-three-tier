@@ -7,8 +7,8 @@ function App() {
   const [employees, setEmployees] = useState([]);
   const [query, setQuery] = useState("");
   const [formData, setFormData] = useState({ name: "", email: "", department: "" });
+  const [editId, setEditId] = useState(null);
 
-  // Fetch employees with optional query
   const fetchEmployees = async (search = "") => {
     try {
       const res = await axios.get(`${API_URL}?search=${search}`);
@@ -18,27 +18,45 @@ function App() {
     }
   };
 
-  // Initial fetch
   useEffect(() => {
     fetchEmployees();
   }, []);
 
-  // Handle search button click
   const handleSearch = () => {
     fetchEmployees(query);
   };
 
-  // Handle form submission to add new employee
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(API_URL, formData);
+      if (editId) {
+        await axios.put(`${API_URL}/${editId}`, formData);
+      } else {
+        await axios.post(API_URL, formData);
+      }
       setFormData({ name: "", email: "", department: "" });
-      fetchEmployees(); // Refresh list
+      setEditId(null);
+      fetchEmployees();
     } catch (err) {
-      alert("Error adding employee. Check if email already exists.");
+      alert("Error saving employee. Check if email already exists.");
       console.error(err);
     }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this employee?")) return;
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      fetchEmployees();
+    } catch (err) {
+      console.error("Error deleting employee:", err);
+    }
+  };
+
+  const handleEdit = (emp) => {
+    setEditId(emp.id);
+    setFormData({ name: emp.name, email: emp.email, department: emp.department });
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -60,15 +78,19 @@ function App() {
 
       <ul>
         {employees.map((emp) => (
-          <li key={emp.id}>
+          <li key={emp.id} style={{ marginBottom: "8px" }}>
             <b>{emp.name}</b> - {emp.department} - {emp.email}
+            <div style={{ marginTop: 4 }}>
+              <button onClick={() => handleEdit(emp)} style={{ marginRight: 10 }}>Edit</button>
+              <button onClick={() => handleDelete(emp.id)} style={{ color: "red" }}>Delete</button>
+            </div>
           </li>
         ))}
       </ul>
 
       <hr />
 
-      <h3>Add Employee</h3>
+      <h3>{editId ? "Edit Employee" : "Add Employee"}</h3>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -95,7 +117,7 @@ function App() {
           style={{ width: "100%", padding: 8, marginBottom: 10 }}
         />
         <button type="submit" style={{ padding: 10, width: "100%" }}>
-          Add Employee
+          {editId ? "Update Employee" : "Add Employee"}
         </button>
       </form>
     </div>
