@@ -1,3 +1,5 @@
+# models.py
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -12,3 +14,11 @@ class Employee(db.Model):
 
     def __repr__(self):
         return f"<Employee {self.name} - {self.email} - {self.department}>"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "department": self.department
+        }
