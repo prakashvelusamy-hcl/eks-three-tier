@@ -27,8 +27,11 @@ from flask import Flask
 from models import db
 from config import SQLALCHEMY_DATABASE_URI
 from routes import bp
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
