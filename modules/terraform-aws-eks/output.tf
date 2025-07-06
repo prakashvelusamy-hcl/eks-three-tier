@@ -70,3 +70,7 @@ output "node_group_public_version" {
   description = "Public Node Group Kubernetes Version"
   value       = aws_eks_node_group.ng.version
 }
+
+output "eks_node_sg_id" {
+  value = aws_security_group.eks.id
+}

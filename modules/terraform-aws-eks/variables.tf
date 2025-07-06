@@ -28,6 +28,8 @@ variable "cluster_role_dependency" {
 
 variable "eks_oidc_root_ca_thumbprint" {
 }
+variable "credentials_secret_arn" {}
+variable "connection_secret_arn" {}
 
 #variable "aws_eks_cluster_identity" {
 #}

@@ -21,8 +21,32 @@ module "eks" {
   eks_oidc_root_ca_thumbprint = var.eks_oidc_root_ca_thumbprint
   cluster_role_dependency     = module.iam.eks_role_depends_on
   vpc_id                      = module.vpc.vpc_id
+  credentials_secret_arn = module.rds.credentials_secret_arn
+  connection_secret_arn =   module.rds.connection_secret_arn
+    providers = {
+    kubernetes = kubernetes
+  }
   depends_on = [module.vpc]
 }
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
+}
+
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+module "rds" {
+  source = "./modules/terraform-aws-rds"
+  private_subnet_ids = module.vpc.private_subnet_ids
+  vpc_id = module.vpc.vpc_id
+  eks_node_sg_id = module.eks.eks_node_sg_id
+  
+}
+
 #module "apps" {
 #  source = "./modules/terraform-aws-apps"
 #}
