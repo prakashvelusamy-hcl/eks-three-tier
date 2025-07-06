@@ -32,7 +32,7 @@ Secrets Manager
 
 ## 🧱 Directory Structure
 
-```bash
+```
 .
 ├── backend/               # Flask API backend
 │   ├── app.py             # Main Flask application
@@ -69,9 +69,7 @@ Secrets Manager
 
 ⚙️ Deployment Steps
 1. Infrastructure Provisioning (Terraform)
-bash
-Copy
-Edit
+
 terraform init
 terraform apply
 Creates:
@@ -85,9 +83,7 @@ RDS instance
 Secrets Manager secret
 
 2. Build and Push Docker Images
-bash
-Copy
-Edit
+
 # Backend
 cd backend
 docker build -t <your-ecr-repo>/employee-backend .
@@ -98,9 +94,7 @@ cd frontend
 docker build -t <your-ecr-repo>/employee-frontend .
 docker push <your-ecr-repo>/employee-frontend
 3. Deploy to Kubernetes
-bash
-Copy
-Edit
+
 kubectl apply -f modules/terraform-aws-apps/backend/
 kubectl apply -f modules/terraform-aws-apps/frontend/
 
