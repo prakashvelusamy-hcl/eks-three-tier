@@ -17,7 +17,7 @@ jobs:
   build-push-apps:
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME_BACKEND: flask_app
+      IMAGE_NAME_BACKEND: flask_backend
       IMAGE_NAME_FRONTEND: react_frontend
       DOCKER_DIR_BACKEND: backend
       DOCKER_DIR_FRONTEND: frontend
