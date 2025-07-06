@@ -31,8 +31,8 @@ resource "aws_iam_policy" "secrets_policy" {
         Effect = "Allow",
         Action = ["secretsmanager:GetSecretValue"],
         Resource = [
-          "arn:aws:secretsmanager:ap-south-1:495599733393:secret:rds-connection-secret-EBEVYw",
-          "arn:aws:secretsmanager:ap-south-1:495599733393:secret:rds-credentials-secret-P0ahXH"
+          var.credentials_secret_arn,
+          var.connection_secret_arn
         ]
       }
     ]

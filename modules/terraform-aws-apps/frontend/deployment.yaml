@@ -22,10 +22,18 @@ spec:
             - name: env-config
               mountPath: /usr/share/nginx/html/env.js
               subPath: env.js
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
       volumes:
         - name: env-config
           configMap:
             name: frontend-env
+
 
 
 
