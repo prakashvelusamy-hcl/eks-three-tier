@@ -23,9 +23,17 @@ spec:
             - containerPort: 5000
           env:
             - name: RDS_SECRET_NAME
-              value: "rds-credentials-secret"  
+              value: "rds-credentials-secret"
             - name: APP_SECRET_NAME
               value: "rds-connection-secret"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+
 
 
 ---

@@ -63,40 +63,50 @@ jobs:
           docker tag $IMAGE_NAME_FRONTEND:latest $ECR_REGISTRY/$IMAGE_NAME_FRONTEND:v1
           docker push $ECR_REGISTRY/$IMAGE_NAME_FRONTEND:v1
 
-  # deploy:
-  #   name: Deploy App and ALB Ingress
-  #   needs: build-push-apps  
-  #   runs-on: ubuntu-latest
+  deploy:
+    name: Deploy App and ALB Ingress
+    needs: build-push-apps  
+    runs-on: ubuntu-latest
 
-  #   env:
-  #     CLUSTER_NAME: EKS
-  #     AWS_REGION: ap-south-1
-  #     NAMESPACE: default
+    env:
+      CLUSTER_NAME: EKS
+      AWS_REGION: ap-south-1
+      NAMESPACE: default
 
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
       
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         role-to-assume: arn:aws:iam::495599733393:role/OIDC
-  #         aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::495599733393:role/OIDC
+          aws-region: ${{ env.AWS_REGION }}
 
-  #     - name: Setup kubectl
-  #       uses: azure/setup-kubectl@v3
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
 
-  #     - name: Setup Helm
-  #       uses: azure/setup-helm@v3
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
 
-  #     - name: Update kubeconfig
-  #       run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
 
-  #     - name: Verify Cluster Access
-  #       run: kubectl get nodes
+      - name: Verify Cluster Access
+        run: kubectl get nodes
 
-  #     - name: EKS Deployment + Service + Ingress
-  #       run: |
-  #         kubectl apply -f ./modules/terraform-aws-apps/deployment.yaml
-  #         kubectl apply -f ./modules/terraform-aws-apps/service.yaml
-  #         kubectl apply -f ./modules/terraform-aws-apps/ingress.yaml
+      - name: EKS Deployment + Service + Ingress
+        run: |
+         
+          kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/backend/namespace.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/backend/deployment.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/backend/ingress.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/backend/hpa.yaml
+          
+          kubectl apply -f ./modules/terraform-aws-apps/frontend/namespace.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/frontend/configmap.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/frontend/aws-logging.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/frontend/deployment.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/frontend/ingress.yaml
+          kubectl apply -f ./modules/terraform-aws-apps/frontend/hpa.yaml
