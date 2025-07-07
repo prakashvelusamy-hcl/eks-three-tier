@@ -3,7 +3,7 @@ name: Build and Push to ECR
 on:
   push:
     paths:
-      - '.github/workflows/apply.yaml'
+      - '.github/workflows/cicd.yaml'
   workflow_dispatch:
 
 permissions:
